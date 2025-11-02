@@ -1,0 +1,136 @@
+{
+  "desktop-commander": {
+    "config": {
+      "command": "npx",
+      "args": [
+        "@wonderwhy-er/desktop-commander@latest"
+      ]
+    },
+    "description": "Provides filesystem access, terminal execution, long-running interactive TUI process control, and diff-based file editing from an MCP client.",
+    "keywords": [
+      "terminal",
+      "tui",
+      "process-management",
+      "file-editing",
+      "shell",
+      "automation"
+    ],
+    "useCases": [
+      "Running a long-lived terminal task and interacting with it incrementally (e.g., a server log monitor, htop, ncurses apps).",
+      "Editing files safely using diff-based patches rather than rewriting full files.",
+      "Managing running processes: listing processes, streaming output, sending signals."
+    ],
+    "notGoodFor": [
+      "Web automation or browser control (use Playwright instead).",
+      "High-volume structured data processing (use native APIs or script pipelines).",
+      "Use in unsecured environments without sandboxing (requires containerization for safe deployment)."
+    ],
+    "limitations": [
+      "Interactive TUI behavior depends on terminal/PTY environment and may be fragile in misconfigured shells.",
+      "Grants high system access — should be sandboxed or isolated.",
+      "Long-running sessions require stable process supervision to avoid orphan processes."
+    ],
+    "examplePrompt": "Start a persistent htop session and stream process list output to help monitor system load trends over the next 5 minutes."
+  },
+  "playwright": {
+    "config": {
+      "command": "npx",
+      "args": [
+        "@playwright/mcp@latest"
+      ]
+    },
+    "description": "Browser automation via Playwright exposed through MCP. Allows navigation, DOM interactions, screenshots, form submission, and structured extraction.",
+    "keywords": [
+      "browser",
+      "web-automation",
+      "scraping",
+      "ui-testing",
+      "dom-interaction"
+    ],
+    "useCases": [
+      "Automated testing of web UIs and flows.",
+      "Extracting structured content when no API is available.",
+      "Filling forms or simulating user interactions deterministically."
+    ],
+    "notGoodFor": [
+      "Attempting to control native applications (use desktop-commander for that).",
+      "High-speed scraping of large datasets (browser automation is slower than HTTP-based extraction).",
+      "Sites requiring CAPTCHA or strong bot detection handling without proxies."
+    ],
+    "limitations": [
+      "Browser context reinitialization may reset session/state.",
+      "Running multiple concurrent browser contexts increases memory and CPU usage.",
+      "Detected by some anti-bot mechanisms without additional configuration."
+    ],
+    "examplePrompt": "Navigate to https://news.ycombinator.com and return the titles and URLs of the top 10 stories."
+  },
+  "zai-mcp-server": {
+    "config": {
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@z_ai/mcp-server"
+      ],
+      "env": {
+        "Z_AI_API_KEY": "$Z_AI_API_KEY",
+        "Z_AI_MODE": "ZAI"
+      }
+    },
+    "description": "Provides Z AI model access via MCP for text analysis, classification, summarization, or conversation tasks.",
+    "keywords": [
+      "language-model",
+      "nlp",
+      "inference",
+      "summarization",
+      "classification"
+    ],
+    "useCases": [
+      "Summarizing large bodies of text.",
+      "Generating or rewriting content.",
+      "Semantic classification or topic extraction."
+    ],
+    "notGoodFor": [
+      "System-level automation or file operations.",
+      "Browser or desktop control (pair with Playwright or desktop-commander instead).",
+      "Tasks requiring deterministic rule-based output (LLMs are probabilistic)."
+    ],
+    "limitations": [
+      "Quality and behavior depend on the underlying model.",
+      "Output can drift or require prompting technique tuning."
+    ],
+    "examplePrompt": "Summarize the following Slack conversation into a concise status update with next steps."
+  },
+  "sequential-thinking": {
+    "config": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-sequential-thinking"
+      ]
+    },
+    "description": "A reasoning scaffolding MCP server that structures task execution into deliberate multi-step sequences.",
+    "keywords": [
+      "reasoning",
+      "task-planning",
+      "decomposition",
+      "strategy"
+    ],
+    "useCases": [
+      "Breaking ambiguous tasks into smaller sequential steps.",
+      "Planning multi-phase workflows before executing.",
+      "Enforcing slower, more deliberate reasoning to reduce mistakes."
+    ],
+    "notGoodFor": [
+      "Tasks requiring immediate execution rather than planning.",
+      "Low-latency or real-time operations.",
+      "Automations where each step is already well-defined."
+    ],
+    "limitations": [
+      "Adds overhead and latency to responses.",
+      "Does not execute tasks itself — requires pairing with another MCP server.",
+      "Structured plans may still require validation or human review."
+    ],
+    "examplePrompt": "Plan the steps required to migrate a legacy database to PostgreSQL before executing any commands."
+  }
+}
