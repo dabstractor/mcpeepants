@@ -132,5 +132,134 @@
       "Structured plans may still require validation or human review."
     ],
     "examplePrompt": "Plan the steps required to migrate a legacy database to PostgreSQL before executing any commands."
+  },
+  "chrome-devtools": {
+    "config": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "chrome-devtools-mcp@latest"
+      ]
+    },
+    "description": "Direct Chrome DevTools Protocol access for browser automation, performance analysis, and debugging with native Chrome integration.",
+    "keywords": [
+      "chrome",
+      "devtools",
+      "browser-automation",
+      "performance-analysis",
+      "debugging",
+      "protocol"
+    ],
+    "useCases": [
+      "Performance profiling and analysis of web applications.",
+      "Native Chrome DevTools automation for debugging workflows.",
+      "Browser automation when Chrome-specific features are required.",
+      "Network request inspection and console message analysis."
+    ],
+    "notGoodFor": [
+      "Cross-browser testing (use Playwright for multi-browser support).",
+      "Production web scraping without proper anti-detection measures.",
+      "File system operations or system-level automation (use desktop-commander).",
+      "Applications requiring extensive form automation without debugging focus."
+    ],
+    "limitations": [
+      "Limited to Chrome/Chromium browsers only.",
+      "Several active bugs including screenshot resets in mobile emulation.",
+      "No built-in cookie management or user agent modification.",
+      "Browser instance cleanup issues - no clean shutdown mechanism.",
+      "Protocol connection errors under certain conditions."
+    ],
+    "examplePrompt": "Analyze the performance metrics of https://example.com and identify the top 3 performance bottlenecks affecting page load time."
+  },
+  "serena": {
+    "config": {
+      "command": "uvx",
+      "args": [
+        "--from",
+        "git+https://github.com/oraios/serena",
+        "serena",
+        "start-mcp-server",
+        "--context",
+        "ide-assistant"
+      ],
+      "env": {
+        "PYTHONUNBUFFERED": "1"
+      }
+    },
+    "description": "Advanced coding agent toolkit providing semantic retrieval and editing capabilities through symbol-level operations. Acts like an IDE with refactoring, code navigation, and multi-language support.",
+    "keywords": [
+      "semantic",
+      "refactoring",
+      "symbols",
+      "ide",
+      "navigation",
+      "multi-language"
+    ],
+    "useCases": [
+      "Large codebase analysis and understanding",
+      "Safe refactoring across multiple files",
+      "Finding references and symbol relationships",
+      "Working with polyglot/monorepo projects",
+      "IDE-like code navigation and editing"
+    ],
+    "notGoodFor": [
+      "Simple text editing tasks",
+      "Projects without proper language server support",
+      "Very small codebases where overhead isn't justified",
+      "Environments with strict security requirements"
+    ],
+    "limitations": [
+      "Requires Python 3.11+ and proper language server setup",
+      "Can be resource-intensive on large projects",
+      "May experience timeouts with very large codebases",
+      "Some tools execute code without permission prompts"
+    ],
+    "examplePrompt": "Analyze this codebase to understand the architecture, then refactor the UserService class to follow the repository pattern, updating all references across the project."
+  },
+  "context7": {
+    "config": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@upstash/context7-mcp",
+        "--api-key",
+        "$CONTEXT7_API_KEY"
+      ],
+      "env": {
+        "CONTEXT7_API_KEY": "$CONTEXT7_API_KEY"
+      }
+    },
+    "description": "Real-time documentation search and retrieval MCP server providing up-to-date code documentation for 50,000+ libraries. Injects current documentation context directly into AI development workflows.",
+    "keywords": [
+      "documentation",
+      "search",
+      "libraries",
+      "real-time",
+      "context-injection",
+      "reference",
+      "api-docs"
+    ],
+    "useCases": [
+      "Finding the latest documentation for any library or framework during development",
+      "Getting context about unfamiliar APIs before writing code",
+      "Verifying function signatures and parameters in real-time",
+      "Cross-referencing documentation across multiple libraries",
+      "Staying updated with breaking changes and version-specific documentation",
+      "Building prompts with accurate, up-to-date library information"
+    ],
+    "notGoodFor": [
+      "Low-latency operations requiring immediate responses (documentation lookup adds overhead)",
+      "Offline development scenarios without internet connectivity",
+      "Very stable legacy codebases where documentation rarely changes",
+      "Tasks not involving external library reference or documentation"
+    ],
+    "limitations": [
+      "Requires internet connectivity to fetch documentation",
+      "Rate limiting applies without API key - higher limits with free account from context7.com/dashboard",
+      "API key required for production usage or higher rate limits",
+      "Documentation freshness depends on source repositories and indexing",
+      "Some niche libraries may not be available in the database"
+    ],
+    "examplePrompt": "Show me the latest documentation for React hooks and fetch the current API reference for the OpenAI v1 API to help write a new integration."
   }
 }
