@@ -1,37 +1,4 @@
 {
-  "desktop-commander": {
-    "config": {
-      "command": "npx",
-      "args": [
-        "@wonderwhy-er/desktop-commander@latest"
-      ]
-    },
-    "description": "Provides filesystem access, terminal execution, long-running interactive TUI process control, and diff-based file editing from an MCP client.",
-    "keywords": [
-      "terminal",
-      "tui",
-      "process-management",
-      "file-editing",
-      "shell",
-      "automation"
-    ],
-    "useCases": [
-      "Running a long-lived terminal task and interacting with it incrementally (e.g., a server log monitor, htop, ncurses apps).",
-      "Editing files safely using diff-based patches rather than rewriting full files.",
-      "Managing running processes: listing processes, streaming output, sending signals."
-    ],
-    "notGoodFor": [
-      "Web automation or browser control (use Playwright instead).",
-      "High-volume structured data processing (use native APIs or script pipelines).",
-      "Use in unsecured environments without sandboxing (requires containerization for safe deployment)."
-    ],
-    "limitations": [
-      "Interactive TUI behavior depends on terminal/PTY environment and may be fragile in misconfigured shells.",
-      "Grants high system access — should be sandboxed or isolated.",
-      "Long-running sessions require stable process supervision to avoid orphan processes."
-    ],
-    "examplePrompt": "Start a persistent htop session and stream process list output to help monitor system load trends over the next 5 minutes."
-  },
   "playwright": {
     "config": {
       "command": "npx",
@@ -53,7 +20,7 @@
       "Filling forms or simulating user interactions deterministically."
     ],
     "notGoodFor": [
-      "Attempting to control native applications (use desktop-commander for that).",
+      "Automating native desktop applications with GUI controls (requires desktop automation tools).",
       "High-speed scraping of large datasets (browser automation is slower than HTTP-based extraction).",
       "Sites requiring CAPTCHA or strong bot detection handling without proxies."
     ],
@@ -92,7 +59,7 @@
     ],
     "notGoodFor": [
       "System-level automation or file operations.",
-      "Browser or desktop control (pair with Playwright or desktop-commander instead).",
+      "Browser automation or GUI application control (requires specialized automation tools).",
       "Tasks requiring deterministic rule-based output (LLMs are probabilistic)."
     ],
     "limitations": [
@@ -159,7 +126,7 @@
     "notGoodFor": [
       "Cross-browser testing (use Playwright for multi-browser support).",
       "Production web scraping without proper anti-detection measures.",
-      "File system operations or system-level automation (use desktop-commander).",
+      "File system operations or terminal command execution (requires system access tools).",
       "Applications requiring extensive form automation without debugging focus."
     ],
     "limitations": [
@@ -261,5 +228,51 @@
       "Some niche libraries may not be available in the database"
     ],
     "examplePrompt": "Show me the latest documentation for React hooks and fetch the current API reference for the OpenAI v1 API to help write a new integration."
+  },
+  "desktop-commander": {
+    "config": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@wonderwhy-er/desktop-commander@latest"
+      ]
+    },
+    "description": "Terminal and filesystem operations MCP server providing command-line execution, file editing, in-memory code execution, and process management with audit logging. Focuses on system-level operations via terminal, NOT GUI desktop automation.",
+    "keywords": [
+      "terminal",
+      "filesystem",
+      "process-control",
+      "file-editing",
+      "code-execution",
+      "system-access",
+      "audit-logging",
+      "session-management"
+    ],
+    "useCases": [
+      "Executing terminal commands with interactive process control",
+      "Performing filesystem operations and file editing with surgical precision",
+      "Running code in memory (Python, Node.js, R) without saving files",
+      "Instant data analysis of CSV/JSON files",
+      "Searching files and content with ripgrep-based recursive search",
+      "Managing long-running processes and development servers",
+      "System administration and maintenance tasks",
+      "Code analysis and refactoring operations"
+    ],
+    "notGoodFor": [
+      "GUI automation or desktop application control (no visual interface capabilities)",
+      "Browser automation or web interactions (use playwright or chrome-devtools)",
+      "Cross-platform desktop application testing (requires GUI automation tools)",
+      "Visual element recognition and interaction (use computer vision tools)",
+      "Production environments requiring strict command whitelisting without audit trails"
+    ],
+    "limitations": [
+      "Requires Node.js v18+ for installation (Docker option available)",
+      "Recent security vulnerabilities discovered (directory traversal, command bypass)",
+      "Some potentially dangerous commands are blocked by default for safety",
+      "Full system access requires careful security consideration and monitoring",
+      "Docker installation provides isolation but with reduced capabilities",
+      "Performance may vary across platforms (Windows users report more connection issues)"
+    ],
+    "examplePrompt": "Analyze the performance of the current git repository, identify large files, and run a code quality check on the main source files."
   }
 }
