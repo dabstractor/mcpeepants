@@ -274,5 +274,148 @@
       "Performance may vary across platforms (Windows users report more connection issues)"
     ],
     "examplePrompt": "Analyze the performance of the current git repository, identify large files, and run a code quality check on the main source files."
+  },
+  "video-processing": {
+    "config": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@mcpeepants/video-processing-mcp@latest"
+      ],
+      "env": {
+        "FFMPEG_PATH": "$FFMPEG_PATH",
+        "VIDEO_API_KEY": "$VIDEO_API_KEY",
+        "MAX_VIDEO_SIZE_MB": "$MAX_VIDEO_SIZE_MB"
+      }
+    },
+    "description": "Comprehensive video processing MCP server providing analysis, conversion, format detection, and frame extraction capabilities. Built on FFmpeg with security-focused input validation and size limits.",
+    "keywords": [
+      "video",
+      "video-processing",
+      "ffmpeg",
+      "video-analysis",
+      "video-conversion",
+      "frame-extraction",
+      "format-detection",
+      "multimedia"
+    ],
+    "useCases": [
+      "Analyzing video content and extracting metadata information.",
+      "Converting between video formats (MP4, MOV, M4V, AVI, WMV, WebM).",
+      "Extracting specific frames or creating frame sequences from videos.",
+      "Validating video files and checking for corruption or format issues.",
+      "Generating video thumbnails and previews for content management.",
+      "Processing video files for web optimization and compression."
+    ],
+    "notGoodFor": [
+      "Real-time video streaming or live video processing (requires specialized streaming tools).",
+      "Large-scale video batch processing without proper resource management (may exceed memory/time limits).",
+      "Video editing operations requiring timeline-based editing or complex effects (use dedicated video editing software).",
+      "Audio-only processing (use audio-specific tools for better performance)."
+    ],
+    "limitations": [
+      "Maximum file size limited to 8MB by default for security and performance reasons.",
+      "Processing time depends on file size and system resources (large files may take several minutes).",
+      "Requires FFmpeg installation on the host system for video processing operations.",
+      "Some advanced video formats or codecs may not be supported depending on FFmpeg build configuration.",
+      "Concurrent processing limited by system memory and CPU resources.",
+      "Network-based video processing depends on connection stability and download speed."
+    ],
+    "examplePrompt": "Analyze the video file /path/to/video.mp4, extract its metadata, and convert it to WebM format with optimized settings for web playback."
+  },
+  "mermaid-mcp-server": {
+    "config": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@peng-shawn/mermaid-mcp-server@latest"
+      ],
+      "env": {
+        "CONTENT_IMAGE_SUPPORTED": "true"
+      }
+    },
+    "description": "MCP server for converting Mermaid diagram syntax to PNG images or SVG files using headless Chrome rendering. Supports themes, custom backgrounds, and multiple output formats for professional diagram generation.",
+    "keywords": [
+      "diagrams",
+      "mermaid",
+      "visualization",
+      "chart-generation",
+      "flowcharts",
+      "svg",
+      "png",
+      "documentation"
+    ],
+    "useCases": [
+      "Generating flowcharts and sequence diagrams from text descriptions.",
+      "Creating architecture diagrams and system design visualizations.",
+      "Documenting processes and workflows with professional diagrams.",
+      "Converting complex relationships into visual diagram representations.",
+      "Enhancing technical documentation with automated diagram generation.",
+      "Creating Git graphs, Gantt charts, and organizational charts."
+    ],
+    "notGoodFor": [
+      "Real-time interactive diagram editing (requires dedicated diagramming tools).",
+      "High-volume batch processing without resource management (browser overhead per request).",
+      "Complex vector graphics manipulation beyond standard Mermaid capabilities.",
+      "Production environments requiring strict security without sandboxing.",
+      "Applications needing sub-second response times for diagram generation."
+    ],
+    "limitations": [
+      "High memory usage (~100-200MB per request) due to headless Chrome requirements.",
+      "Performance overhead from browser startup and rendering (~1-3 seconds per diagram).",
+      "Security vulnerabilities present (path traversal, loose browser security settings).",
+      "Single-threaded processing limits concurrent request handling.",
+      "Requires Node.js 18+ and sufficient system resources for Chrome operations.",
+      "Early-stage development with potential stability issues and limited community support."
+    ],
+    "examplePrompt": "Create a flowchart showing the user authentication process with decision points, using the dark theme and transparent background."
+  },
+  "brave-search": {
+    "config": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@brave/brave-search-mcp-server"
+      ],
+      "env": {
+        "BRAVE_API_KEY": "$BRAVE_API_KEY"
+      }
+    },
+    "description": "Comprehensive web search with AI summarization providing access to web, images, videos, news, and local business search through Brave's search API. Offers structured results with metadata and real-time information discovery.",
+    "keywords": [
+      "web-search",
+      "search-api",
+      "ai-summarization",
+      "news",
+      "images",
+      "videos",
+      "local-search",
+      "information-retrieval",
+      "brave-search"
+    ],
+    "useCases": [
+      "Researching current topics and finding up-to-date information across the web.",
+      "Searching for local businesses, restaurants, and services with ratings and details.",
+      "Finding relevant news articles and recent developments on specific topics.",
+      "Discovering tutorial videos and multimedia content for learning.",
+      "Getting AI-powered summaries of search results for quick insights.",
+      "Conducting comprehensive research across multiple content types in a single query."
+    ],
+    "notGoodFor": [
+      "Browser automation or interactive web page manipulation (use playwright or chrome-devtools).",
+      "Accessing content behind paywalls or authentication-protected sites.",
+      "Real-time data streaming or continuous monitoring of web content changes.",
+      "High-volume automated scraping without proper rate limit consideration.",
+      "Navigating specific websites or filling out forms (requires browser automation tools)."
+    ],
+    "limitations": [
+      "Requires Brave Search API key - free tier offers 2,000 queries/month with rate limits.",
+      "Conservative rate limiting (1 request/second, 15,000/month) may impact high-throughput workflows.",
+      "Some users report connection issues and MCP ERROR 32000 in certain configurations.",
+      "No test coverage in the codebase - potential quality and reliability concerns.",
+      "Search results limited to Brave's index and ranking algorithms.",
+      "API key must be kept secure and properly configured as environment variable."
+    ],
+    "examplePrompt": "Search for recent developments in quantum computing and provide a summary of the key breakthroughs from the past month."
   }
 }
