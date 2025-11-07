@@ -33,7 +33,6 @@
   },
   "zai-mcp-server": {
     "config": {
-      "type": "stdio",
       "command": "npx",
       "args": [
         "-y",
@@ -44,29 +43,39 @@
         "Z_AI_MODE": "ZAI"
       }
     },
-    "description": "Provides Z AI model access via MCP for text analysis, classification, summarization, or conversation tasks.",
+    "description": "Vision and video analysis MCP server powered by GLM-4.5V (106B parameters) for multimodal understanding. Analyzes images and videos with state-of-the-art performance across 42 vision-language benchmarks.",
     "keywords": [
-      "language-model",
-      "nlp",
-      "inference",
-      "summarization",
-      "classification"
+      "vision",
+      "video-analysis",
+      "image-analysis",
+      "multimodal",
+      "glm-4.5v",
+      "scene-understanding",
+      "chart-parsing"
     ],
     "useCases": [
-      "Summarizing large bodies of text.",
-      "Generating or rewriting content.",
-      "Semantic classification or topic extraction."
+      "Analyzing images for scene understanding and object recognition.",
+      "Processing videos for event recognition and segmentation.",
+      "Parsing charts, diagrams, and long documents visually.",
+      "GUI task processing and spatial recognition.",
+      "Multi-image analysis for complex visual reasoning."
     ],
     "notGoodFor": [
-      "System-level automation or file operations.",
-      "Browser automation or GUI application control (requires specialized automation tools).",
-      "Tasks requiring deterministic rule-based output (LLMs are probabilistic)."
+      "Pure text-only tasks (GLM-4.5V focused on multimodal scenarios).",
+      "Direct image pasting in most clients (must reference local file paths).",
+      "Audio processing (no native audio input support).",
+      "Fine-grained perception tasks like precise counting or identifying specific individuals.",
+      "Free tier usage (requires GLM Coding Plan Pro or higher at $15+/month)."
     ],
     "limitations": [
-      "Quality and behavior depend on the underlying model.",
-      "Output can drift or require prompting technique tuning."
+      "Requires paid subscription: GLM Coding Plan Pro ($15/month) or Max ($45/month).",
+      "Images must be placed in local directories and referenced by path (direct pasting unsupported).",
+      "Node.js 18+ required (22+ recommended).",
+      "Closed-source implementation (not publicly auditable).",
+      "May output raw HTML without markdown wrapping.",
+      "Text-only Q&A capabilities need improvement compared to vision tasks."
     ],
-    "examplePrompt": "Summarize the following Slack conversation into a concise status update with next steps."
+    "examplePrompt": "Analyze the screenshot at /path/to/screenshot.png and describe the UI layout, identifying any accessibility issues or design inconsistencies."
   },
   "sequential-thinking": {
     "config": {
@@ -417,5 +426,98 @@
       "API key must be kept secure and properly configured as environment variable."
     ],
     "examplePrompt": "Search for recent developments in quantum computing and provide a summary of the key breakthroughs from the past month."
+  },
+  "tavily": {
+    "config": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "tavily-mcp@latest"
+      ],
+      "env": {
+        "TAVILY_API_KEY": "$TAVILY_API_KEY"
+      }
+    },
+    "description": "Comprehensive web access MCP server providing real-time search, intelligent extraction, structured mapping, and systematic crawling capabilities. Optimized for AI agents with LLM-friendly results and citation support.",
+    "keywords": [
+      "web-search",
+      "data-extraction",
+      "web-crawling",
+      "site-mapping",
+      "research",
+      "llm-optimized",
+      "citations",
+      "tavily-api"
+    ],
+    "useCases": [
+      "Researching current topics and extracting structured data from web pages.",
+      "Systematically exploring websites and creating comprehensive site maps.",
+      "Crawling web content for data collection and analysis projects.",
+      "Academic research requiring citation-backed search results.",
+      "Market intelligence gathering with structured data extraction.",
+      "Competitive analysis through comprehensive web data collection."
+    ],
+    "notGoodFor": [
+      "Real-time web page interaction or form automation (requires browser automation tools).",
+      "High-volume automated scraping without rate limit consideration.",
+      "Accessing content behind authentication or paywalls without proper credentials.",
+      "Local file system operations or system-level automation (requires filesystem tools).",
+      "Offline operations or scenarios without internet connectivity."
+    ],
+    "limitations": [
+      "Requires Tavily API key - free tier offers 1,000 credits/month with rate limits.",
+      "Rate limiting applies based on subscription tier and usage patterns.",
+      "Search results limited to Tavily's web index and crawling capabilities.",
+      "API key security required - must be properly stored as environment variable.",
+      "Dependent on internet connectivity and Tavily API service availability."
+    ],
+    "examplePrompt": "Search for recent developments in renewable energy technology, extract key data points from the top results, and provide citations for each finding."
+  },
+  "z-ai-web-search-prime": {
+    "config": {
+      "type": "http",
+      "url": "https://api.z.ai/api/mcp/web_search_prime/mcp",
+      "headers": {
+        "Authorization": "Bearer $Z_AI_API_KEY"
+      }
+    },
+    "description": "Cloud-based web search MCP server providing real-time information retrieval including web search, news, and weather data. HTTP/SSE remote service requiring no local installation, exclusively for GLM Coding Plan subscribers.",
+    "keywords": [
+      "web-search",
+      "real-time-data",
+      "news",
+      "weather",
+      "cloud-service",
+      "z-ai",
+      "glm-integration",
+      "http-mcp"
+    ],
+    "useCases": [
+      "Retrieving latest web information and current events during development workflows.",
+      "Accessing real-time news updates and trending topics.",
+      "Getting weather information for location-based features.",
+      "Researching technology developments and best practices.",
+      "Supplementing coding tasks with up-to-date documentation searches.",
+      "Market research and competitive analysis with current web data."
+    ],
+    "notGoodFor": [
+      "Browser automation or interactive web page manipulation (use playwright or chrome-devtools).",
+      "Accessing content behind paywalls or authentication-protected sites.",
+      "Free tier usage (requires GLM Coding Plan Pro at $15/month minimum).",
+      "Heavy search usage exceeding quota limits (1,000 searches/month on Pro, 4,000 on Max).",
+      "Privacy-sensitive scenarios requiring local-only processing.",
+      "Offline development without internet connectivity."
+    ],
+    "limitations": [
+      "Requires paid subscription: GLM Coding Plan Pro ($15/month for 1,000 searches) or Max ($45/month for 4,000 searches).",
+      "API key authentication required - obtain from Z.AI Console.",
+      "Search quotas enforced per billing cycle (resets every 5 hours for prompt limits).",
+      "Account must have sufficient balance/credits for API usage.",
+      "Cloud-dependent service - requires stable internet connectivity.",
+      "Limited community transparency (closed-source, no public issue tracker).",
+      "Citation accuracy issues common to AI search engines (60%+ failure rate industry-wide).",
+      "Not available on Lite tier ($3/month) - Pro tier minimum required."
+    ],
+    "examplePrompt": "Search for the latest AI technology developments and find best practices for Python asynchronous programming, then summarize the key findings."
   }
 }
