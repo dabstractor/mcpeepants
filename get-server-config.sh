@@ -183,15 +183,16 @@ keys_json=$(printf '%s\n' "$@" | jq -R . | jq -s .)
 
 # Extract specified keys and transform to mcpServers format
 # Takes the .config object from each server and places it under mcpServers
+# Interpolate shell variables in environment values and headers
 # Output as single line compact JSON
 jq -c --argjson keys "$keys_json" '
 {
   "mcpServers": (
-    . | 
-    to_entries | 
+    . |
+    to_entries |
     map(select(.key as $k | $keys | index($k) != null)) |
     map({key: .key, value: .value.config}) |
     from_entries
   )
 }
-' "$SERVERS_FILE"
+' "$SERVERS_FILE" | envsubst
