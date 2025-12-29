@@ -1,4 +1,43 @@
 {
+  "mdsel": {
+    "config": {
+      "command": "npx mdsel-mcp",
+      "args": []
+    },
+    "description": "MCP server for declarative markdown content selection via the mdsel CLI. Provides selector-based access to specific document sections including headings, code blocks, paragraphs, lists, and tables using dot notation syntax.",
+    "keywords": [
+      "markdown",
+      "selector",
+      "content-extraction",
+      "document-navigation",
+      "heading-selection",
+      "code-blocks",
+      "declarative",
+      "mdsel"
+    ],
+    "useCases": [
+      "Extracting specific sections from markdown documentation by heading level and index.",
+      "Retrieving code blocks from technical documents without reading entire files.",
+      "Navigating large markdown files to specific content chunks declaratively.",
+      "Building document indexes to discover available content selectors.",
+      "Targeting nested content like code blocks within specific headings."
+    ],
+    "notGoodFor": [
+      "Non-markdown file formats (HTML, RST, plain text).",
+      "Full-text search across document content (use grep/ripgrep).",
+      "Editing or modifying markdown content (read-only tool).",
+      "Real-time document monitoring or change detection.",
+      "Semantic understanding of content (purely structural selection)."
+    ],
+    "limitations": [
+      "Requires mdsel CLI installed locally on the system.",
+      "Stateless - no document caching between calls.",
+      "Selector errors passed through verbatim from mdsel CLI.",
+      "30-second timeout on CLI operations.",
+      "Output truncation by default (use 'full' parameter to bypass)."
+    ],
+    "examplePrompt": "Index the README.md file and then select the second h2 heading and its first code block using selector 'h2.1/code.0'."
+  },
   "playwright": {
     "config": {
       "command": "npx",
