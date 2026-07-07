@@ -1,8 +1,8 @@
 {
   "mdsel": {
     "config": {
-      "command": "npx mdsel-mcp",
-      "args": []
+      "command": "npx",
+      "args": ["-y", "mdsel-mcp"]
     },
     "description": "MCP server for declarative markdown content selection via the mdsel CLI. Provides selector-based access to specific document sections including headings, code blocks, paragraphs, lists, and tables using dot notation syntax.",
     "keywords": [
@@ -558,5 +558,49 @@
       "Not available on Lite tier ($3/month) - Pro tier minimum required."
     ],
     "examplePrompt": "Search for the latest AI technology developments and find best practices for Python asynchronous programming, then summarize the key findings."
+  },
+  "zread": {
+    "config": {
+      "type": "http",
+      "url": "https://api.z.ai/api/mcp/zread/mcp",
+      "headers": {
+        "Authorization": "Bearer $Z_AI_API_KEY"
+      }
+    },
+    "description": "Cloud-based web content reading MCP server that fetches and converts web pages to LLM-friendly markdown format. Handles HTML parsing, content extraction, and provides clean text output suitable for AI consumption.",
+    "keywords": [
+      "web-reader",
+      "content-extraction",
+      "markdown-conversion",
+      "html-parser",
+      "web-scraping",
+      "cloud-service",
+      "z-ai",
+      "http-mcp"
+    ],
+    "useCases": [
+      "Fetching web pages and converting them to markdown for easier LLM processing.",
+      "Extracting clean content from HTML pages without browser automation overhead.",
+      "Reading documentation from websites when local copies are unavailable.",
+      "Processing online articles and blog posts for summarization or analysis.",
+      "Converting web content to structured markdown format for documentation generation."
+    ],
+    "notGoodFor": [
+      "Interactive web page manipulation or form submission (use playwright or chrome-devtools).",
+      "Accessing content behind authentication or paywalls without credentials.",
+      "JavaScript-heavy sites requiring client-side rendering (browser automation needed).",
+      "Free tier usage (requires GLM Coding Plan subscription).",
+      "Privacy-sensitive scenarios requiring local-only processing."
+    ],
+    "limitations": [
+      "Requires paid subscription: GLM Coding Plan Pro ($15/month) or higher.",
+      "API key authentication required - obtain from Z.AI Console.",
+      "Rate limiting applies based on subscription tier.",
+      "Cloud-dependent service - requires stable internet connectivity.",
+      "May not handle complex JavaScript-rendered content.",
+      "Closed-source implementation with limited community transparency.",
+      "Monthly usage quotas enforced per billing cycle."
+    ],
+    "examplePrompt": "Fetch the content from https://example.com/docs/api-reference and extract the main documentation sections as markdown."
   }
 }
