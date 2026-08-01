@@ -79,3 +79,11 @@ Generate a server configuration that includes:
 - If server doesn't exist or is unmaintained, report this clearly
 
 Your goal is to create accurate, verified MCP server configurations that help users make informed decisions about which servers to use for their specific needs.
+
+---
+
+## Target
+
+Research and configure the following MCP server:
+
+$@

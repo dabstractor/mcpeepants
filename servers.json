@@ -41,9 +41,7 @@
   "playwright": {
     "config": {
       "command": "npx",
-      "args": [
-        "@playwright/mcp@latest"
-      ]
+      "args": ["@playwright/mcp@latest"]
     },
     "description": "Browser automation via Playwright exposed through MCP. Allows navigation, DOM interactions, screenshots, form submission, and structured extraction.",
     "keywords": [
@@ -73,10 +71,7 @@
   "zai-mcp-server": {
     "config": {
       "command": "npx",
-      "args": [
-        "-y",
-        "@z_ai/mcp-server"
-      ],
+      "args": ["-y", "@z_ai/mcp-server"],
       "env": {
         "Z_AI_API_KEY": "$Z_AI_API_KEY",
         "Z_AI_MODE": "ZAI"
@@ -119,18 +114,10 @@
   "sequential-thinking": {
     "config": {
       "command": "npx",
-      "args": [
-        "-y",
-        "@modelcontextprotocol/server-sequential-thinking"
-      ]
+      "args": ["-y", "@modelcontextprotocol/server-sequential-thinking"]
     },
     "description": "A reasoning scaffolding MCP server that structures task execution into deliberate multi-step sequences.",
-    "keywords": [
-      "reasoning",
-      "task-planning",
-      "decomposition",
-      "strategy"
-    ],
+    "keywords": ["reasoning", "task-planning", "decomposition", "strategy"],
     "useCases": [
       "Breaking ambiguous tasks into smaller sequential steps.",
       "Planning multi-phase workflows before executing.",
@@ -151,10 +138,7 @@
   "chrome-devtools": {
     "config": {
       "command": "npx",
-      "args": [
-        "-y",
-        "chrome-devtools-mcp@latest"
-      ]
+      "args": ["-y", "chrome-devtools-mcp@latest"]
     },
     "description": "Direct Chrome DevTools Protocol access for browser automation, performance analysis, and debugging with native Chrome integration.",
     "keywords": [
@@ -234,12 +218,7 @@
   "context7": {
     "config": {
       "command": "npx",
-      "args": [
-        "-y",
-        "@upstash/context7-mcp",
-        "--api-key",
-        "$CONTEXT7_API_KEY"
-      ],
+      "args": ["-y", "@upstash/context7-mcp", "--api-key", "$CONTEXT7_API_KEY"],
       "env": {
         "CONTEXT7_API_KEY": "$CONTEXT7_API_KEY"
       }
@@ -280,10 +259,7 @@
   "desktop-commander": {
     "config": {
       "command": "npx",
-      "args": [
-        "-y",
-        "@wonderwhy-er/desktop-commander@latest"
-      ]
+      "args": ["-y", "@wonderwhy-er/desktop-commander@latest"]
     },
     "description": "Terminal and filesystem operations MCP server providing command-line execution, file editing, in-memory code execution, and process management with audit logging. Focuses on system-level operations via terminal, NOT GUI desktop automation.",
     "keywords": [
@@ -326,10 +302,7 @@
   "video-processing": {
     "config": {
       "command": "npx",
-      "args": [
-        "-y",
-        "@mcpeepants/video-processing-mcp@latest"
-      ],
+      "args": ["-y", "@mcpeepants/video-processing-mcp@latest"],
       "env": {
         "FFMPEG_PATH": "$FFMPEG_PATH",
         "VIDEO_API_KEY": "$VIDEO_API_KEY",
@@ -374,10 +347,7 @@
   "mermaid-mcp-server": {
     "config": {
       "command": "npx",
-      "args": [
-        "-y",
-        "@peng-shawn/mermaid-mcp-server@latest"
-      ],
+      "args": ["-y", "@peng-shawn/mermaid-mcp-server@latest"],
       "env": {
         "CONTENT_IMAGE_SUPPORTED": "true"
       }
@@ -421,10 +391,7 @@
   "brave-search": {
     "config": {
       "command": "npx",
-      "args": [
-        "-y",
-        "@brave/brave-search-mcp-server"
-      ],
+      "args": ["-y", "@brave/brave-search-mcp-server"],
       "env": {
         "BRAVE_API_KEY": "$BRAVE_API_KEY"
       }
@@ -469,10 +436,7 @@
   "tavily": {
     "config": {
       "command": "npx",
-      "args": [
-        "-y",
-        "tavily-mcp@latest"
-      ],
+      "args": ["-y", "tavily-mcp@latest"],
       "env": {
         "TAVILY_API_KEY": "$TAVILY_API_KEY"
       }
@@ -511,6 +475,52 @@
       "Dependent on internet connectivity and Tavily API service availability."
     ],
     "examplePrompt": "Search for recent developments in renewable energy technology, extract key data points from the top results, and provide citations for each finding."
+  },
+  "web-search": {
+    "config": {
+      "type": "http",
+      "url": "http://127.0.0.1:8787/mcp",
+      "headers": {
+        "Authorization": "Bearer $Z_AI_API_KEY"
+      }
+    },
+    "description": "Local normalizing MCP server that fronts z.ai's web_search_prime upstream so an agent's first web-search attempt succeeds regardless of how it guessed the tool name or mangled the arguments. Advertises one canonical tool (web_search with { \"query\": \"...\" }), extracts the query from any input shape, delegates exactly one clean call to z.ai, and teaches the correct form via warnings appended after the results. Built on the official Go MCP SDK; not a proxy or open relay.",
+    "keywords": [
+      "web-search",
+      "normalization",
+      "mcp-server",
+      "z-ai",
+      "glm",
+      "web-search-prime",
+      "tool-name-fix",
+      "parameter-extraction",
+      "local-server",
+      "go"
+    ],
+    "useCases": [
+      "Making an agent's first web-search attempt succeed when it guesses the wrong tool name (e.g. web_search vs web_search_prime vs client-prefixed names).",
+      "Recovering from mangled parameter shapes (query, q, search_query, bare string, or nested object) that would otherwise return empty or wrong results.",
+      "Teaching the agent the canonical form (web_search with { \"query\": \"...\" }) via warnings appended after the results rather than instead of them.",
+      "Fronting the z.ai web_search_prime upstream for a smoother, less error-prone agent experience.",
+      "Reducing wasted retry tokens on malformed MCP web-search calls."
+    ],
+    "notGoodFor": [
+      "Acting as a standalone search engine (it delegates to z.ai's web_search_prime; no synthesis, ranking, or caching of its own).",
+      "Use without a GLM Coding Plan subscription and Z_AI_API_KEY (it forwards the same upstream as z-ai-web-search-prime).",
+      "Normalizing any MCP tool other than web_search (single-tool, single-purpose server).",
+      "Zero-install or pure-cloud scenarios (requires building and running a local Go binary).",
+      "Multi-machine or shared deployments (binds 127.0.0.1 loopback only and is not an open relay)."
+    ],
+    "limitations": [
+      "Requires a built Go binary running locally and listening on 127.0.0.1:8787 ('go build -o web-search-prime-fixer .' then './web-search-prime-fixer').",
+      "Requires the MCP client to be unlocked with toolPrefix set to \"none\" (Part A) so tools are exposed by bare names; this is a global client setting, not part of the server config.",
+      "Requires GLM Coding Plan Pro ($15/month) or higher plus a Z_AI_API_KEY (same upstream and auth as z-ai-web-search-prime).",
+      "Only normalizes the web_search tool toward z.ai's web_search_prime; the z.ai-branded name web_search_prime is never advertised to the agent.",
+      "Loopback-only binding (127.0.0.1) cannot be reached from other machines without manual port forwarding.",
+      "toolPrefix: \"none\" applies globally to all of the operator's MCP servers; the operator owns any tool-name collisions (e.g. with zread).",
+      "Performs no retry, rate-limiting, caching, or query truncation; upstream errors are surfaced honestly."
+    ],
+    "examplePrompt": "Search the web for the latest Rust async runtime benchmarks and summarize the key performance findings."
   },
   "z-ai-web-search-prime": {
     "config": {
