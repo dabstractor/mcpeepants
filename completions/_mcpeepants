@@ -1,0 +1,71 @@
+#compdef get-server-config.sh mcpeepants
+# Zsh completion for mcpeepants (get-server-config.sh). Autoload function.
+#
+# Install (one of):
+#   cp completions/_mcpeepants ~/.zsh/completions/_mcpeepants
+#   cp completions/_mcpeepants /usr/local/share/zsh/site-functions/_mcpeepants
+# then ensure this is in your .zshrc:
+#   autoload -U compinit && compinit
+#
+# Server keys are derived DYNAMICALLY from servers.json at completion time
+# (jq, with a grep fallback) — never a hardcoded list. servers.json is the single
+# source of truth (the inverse of skilldozer, which is manifest-free).
+#
+# LOCKSTEP: the flag list below is frozen to the arg parsing in get-server-config.sh.
+# If a future task adds/renames a flag there, update this list — and the bash/fish
+# files — identically. Long-form flags are advertised; -h/-l short aliases stay
+# valid at runtime but are not advertised (mirrors skilldozer decision 20).
+#
+# servers.json is resolved at completion time via $MCPEEPANTS_HOME, else the
+# sibling dir of get-server-config.sh on PATH, else the cwd. If neither is set
+# (e.g. you source this file in place rather than copying it to an fpath dir),
+# export MCPEEPANTS_HOME pointing at the repo so the keys resolve.
+_mcpeepants() {
+    local -a flags=(
+        '--all[Generate config with all available MCP servers]'
+        '--list[List all available MCP servers]'
+        # `:query:` marks --search as value-taking, so zsh routes the value slot
+        # away from $state — NO server-key completion is offered after it
+        # (free-text query). No short alias is advertised (decision 20).
+        '--search[Search servers by name, keyword, or description]:query:'
+        '--help[Show the help message]'
+        '--completions[Emit the shell completion script for eval]'
+        # `:shell:(bash zsh fish)` routes --shell's value slot to a FIXED enum —
+        # offer exactly the three supported shells, nothing else.
+        '--shell[Force a shell for --completions]:shell:(bash zsh fish)'
+    )
+
+    _arguments -C "$flags[@]" '*: :->args' && return 0
+
+    case "$state" in
+        args)
+            # Resolve servers.json (MCPEEPANTS_HOME -> PATH sibling -> cwd).
+            # Empty on miss: completion degrades to "no keys" instead of an error.
+            local f='' bin d
+            if [[ -n "${MCPEEPANTS_HOME:-}" && -f "$MCPEEPANTS_HOME/servers.json" ]]; then
+                f="$MCPEEPANTS_HOME/servers.json"
+            elif bin="$(command -v get-server-config.sh 2>/dev/null)" && [[ -n "$bin" ]]; then
+                d="${bin:A:h}"   # :A resolve symlinks to absolute, :h dirname
+                [[ -f "$d/servers.json" ]] && f="$d/servers.json"
+            elif [[ -f "./servers.json" ]]; then
+                f="./servers.json"
+            fi
+
+            local -a keys=()
+            if [[ -n "$f" ]]; then
+                if command -v jq >/dev/null 2>&1; then
+                    keys=(${(f)"$(jq -r 'keys[]' "$f" 2>/dev/null)"})
+                else
+                    # grep fallback: top-level keys are lines indented exactly
+                    # two spaces (avoids nested config/env/headers objects).
+                    keys=(${(f)"$(grep -oE '^  "[^"]+"' "$f" 2>/dev/null | tr -d ' ')"})
+                fi
+            fi
+            # Positionals are ALWAYS server keys, and servers are never mutually
+            # exclusive — offer them on every positional <tab>, first or later.
+            compadd -- "$keys[@]"
+            ;;
+    esac
+}
+
+_mcpeepants "$@"

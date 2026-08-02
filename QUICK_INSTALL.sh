@@ -21,12 +21,12 @@ case "$CURRENT_SHELL" in
 
         # Check if we can install system-wide
         if [[ -w "/etc/bash_completion.d" ]]; then
-            sudo cp "$SCRIPT_DIR/completion.sh" "/etc/bash_completion.d/mcpeepants"
+            sudo cp "$SCRIPT_DIR/completions/mcpeepants.bash" "/etc/bash_completion.d/mcpeepants"
             echo "✅ Installed system-wide: /etc/bash_completion.d/mcpeepants"
         else
             # User-only installation
             mkdir -p ~/.local/share/bash-completion/completions
-            cp "$SCRIPT_DIR/completion.sh" ~/.local/share/bash-completion/completions/mcpeepants
+            cp "$SCRIPT_DIR/completions/mcpeepants.bash" ~/.local/share/bash-completion/completions/mcpeepants
             echo "✅ Installed for user: ~/.local/share/bash-completion/completions/mcpeepants"
         fi
 
@@ -38,13 +38,13 @@ case "$CURRENT_SHELL" in
 
         # Check if we can install system-wide
         if [[ -w "/usr/share/zsh/site-functions" ]]; then
-            sudo cp "$SCRIPT_DIR/_mcpeepants" "/usr/share/zsh/site-functions/"
+            sudo cp "$SCRIPT_DIR/completions/_mcpeepants" "/usr/share/zsh/site-functions/"
             sudo chmod 644 "/usr/share/zsh/site-functions/_mcpeepants"
             echo "✅ Installed system-wide: /usr/share/zsh/site-functions/_mcpeepants"
         else
             # User-only installation
             mkdir -p ~/.zsh/completions
-            cp "$SCRIPT_DIR/_mcpeepants" ~/.zsh/completions/
+            cp "$SCRIPT_DIR/completions/_mcpeepants" ~/.zsh/completions/
             chmod 644 ~/.zsh/completions/_mcpeepants
 
             # Ensure fpath is set in .zshrc
@@ -64,7 +64,7 @@ case "$CURRENT_SHELL" in
         echo "📦 Installing Fish completion..."
 
         mkdir -p ~/.config/fish/completions
-        cp "$SCRIPT_DIR/mcpeepants.fish" ~/.config/fish/completions/
+        cp "$SCRIPT_DIR/completions/mcpeepants.fish" ~/.config/fish/completions/
         echo "✅ Installed: ~/.config/fish/completions/mcpeepants.fish"
 
         echo "💡 Reload Fish or run: fish_update_completions"
@@ -72,7 +72,7 @@ case "$CURRENT_SHELL" in
 
     *)
         echo "❌ Unsupported shell: $CURRENT_SHELL"
-        echo "🔧 Manual installation required. See INSTALL_COMPLETIONS.md"
+        echo "🔧 Manual installation required. See the README \"Shell completions\" section."
         exit 1
         ;;
 esac
@@ -85,4 +85,4 @@ echo "  cd $SCRIPT_DIR"
 echo "  ./get-server-config.sh <TAB>"
 echo "  ./get-server-config.sh --<TAB>"
 echo
-echo "For more details, see: INSTALL_COMPLETIONS.md"
+echo "For more details, see the README \"Shell completions\" section."

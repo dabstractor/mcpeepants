@@ -4,11 +4,106 @@
 # Usage: ./get-server-config.sh key1 key2 key3 ...
 #        ./get-server-config.sh --list (or -l) to show available servers
 #        ./get-server-config.sh --search query to search servers
+#        ./get-server-config.sh --completions [--shell bash|zsh|fish]
 # Example: ./get-server-config.sh sequential-thinking desktop-commander
 
 # Get the directory where this script is located
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 SERVERS_FILE="$SCRIPT_DIR/servers.json"
+
+# Handle --completions / --shell: emit the shell-completion script for eval
+# (mirrors skilldozer --completions). bash/fish are emitted verbatim; zsh gets an
+# eval-safe wrapper — the autoload file's trailing `_mcpeepants "$@"` self-call
+# is stripped and an explicit compdef + compinit bootstrap is appended, because
+# the `#compdef` header is inert under eval. --shell forces a shell; otherwise
+# detect from $MCPEEPANTS_SHELL, then basename($SHELL). --shell alone implies
+# --completions (parity with skilldozer). Runs BEFORE the servers.json check so
+# it works even in a partial checkout (the scripts resolve servers.json later, at
+# completion time).
+_emit_completions=0
+_force_shell=""
+_prev=""
+for _arg in "$@"; do
+    case "$_arg" in
+        --completions) _emit_completions=1 ;;
+        --shell)       _emit_completions=1 ;;
+        --shell=*)     _emit_completions=1; _force_shell="${_arg#--shell=}" ;;
+    esac
+    if [[ "$_prev" == "--shell" && -z "$_force_shell" ]]; then
+        _force_shell="$_arg"
+    fi
+    _prev="$_arg"
+done
+
+if [[ $_emit_completions -eq 1 ]]; then
+    # Resolve shell: --shell value > $MCPEEPANTS_SHELL > basename($SHELL).
+    _target_shell="$_force_shell"
+    if [[ -z "$_target_shell" ]]; then
+        _target_shell="${MCPEEPANTS_SHELL:-}"
+        [[ -z "$_target_shell" && -n "${SHELL:-}" ]] && _target_shell="${SHELL##*/}"
+    fi
+    if [[ -z "$_target_shell" ]]; then
+        echo "Error: could not detect shell. Pass --shell <bash|zsh|fish>, set \$MCPEEPANTS_SHELL, or \$SHELL." >&2
+        exit 1
+    fi
+
+    # Resolve the completions/ directory: sibling of this script, else $MCPEEPANTS_HOME.
+    _compdir=""
+    for _d in "$SCRIPT_DIR/completions" "${MCPEEPANTS_HOME:-}/completions"; do
+        [[ -n "$_d" && -d "$_d" ]] && { _compdir="$_d"; break; }
+    done
+    if [[ -z "$_compdir" ]]; then
+        echo "Error: completions/ not found (looked in $SCRIPT_DIR/completions and \$MCPEEPANTS_HOME/completions)." >&2
+        exit 1
+    fi
+
+    # Bake the repo location into the emitted script as the default MCPEEPANTS_HOME.
+    # The on-disk completion files resolve servers.json via $MCPEEPANTS_HOME -> script
+    # on PATH -> cwd. But a user who invokes the script through an ALIAS (not on PATH)
+    # from an unrelated cwd hits NONE of those tiers and gets zero keys (the function
+    # still binds via zsh alias resolution, so the menu goes blank rather than falling
+    # back to files). --completions runs from the repo (SCRIPT_DIR = repo root), so it
+    # records that location here. Self-heals on repo move: rc files re-run --completions
+    # at every startup, rebaking the current path.
+    case "$_target_shell" in
+        bash)
+            printf '# Default manifest location: repo this completion was emitted from.\n[[ -z "${MCPEEPANTS_HOME:-}" ]] && MCPEEPANTS_HOME=%q\n' "$SCRIPT_DIR"
+            cat "$_compdir/mcpeepants.bash"
+            ;;
+        fish)
+            printf '# Default manifest location: repo this completion was emitted from.\nif test -z "$MCPEEPANTS_HOME"\n    set -gx MCPEEPANTS_HOME %s\nend\n' "$SCRIPT_DIR"
+            cat "$_compdir/mcpeepants.fish"
+            ;;
+        zsh)
+            # Strip the autoload self-call line and everything after, then append the
+            # eval-safe registration. awk exits at the self-call so only the header +
+            # function body (ending at '}') is emitted.
+            awk '/^_mcpeepants "\$@"$/{exit} {print}' "$_compdir/_mcpeepants"
+            printf '\n# Default manifest location: repo this completion was emitted from.\n# Self-heals on repo move (rc files re-run --completions at startup).\n(( ${+MCPEEPANTS_HOME} )) || MCPEEPANTS_HOME=%s\n' "$SCRIPT_DIR"
+            cat <<'__MCPEEPANTS_ZSH_EVAL__'
+
+# Register the completion for eval. The #compdef header above only binds this as
+# an autoload file on fpath; under eval it is inert, so bind the function
+# explicitly. compsys (_arguments/_files/compadd) is bootstrapped only if not
+# already loaded (oh-my-zsh / prezto / a manual compinit all define compdef).
+# The autoload file's trailing self-call is intentionally omitted: it would fire
+# the function at eval time, before _arguments is guaranteed to exist.
+autoload -Uz compinit
+(( $+functions[compdef] )) || compinit
+(( $+functions[compdef] )) && compdef _mcpeepants get-server-config.sh mcpeepants
+
+# List every ambiguous match on the first Tab (session-global zsh option).
+# Opt-out: setopt LIST_AMBIGUOUS
+setopt NO_LIST_AMBIGUOUS
+__MCPEEPANTS_ZSH_EVAL__
+            ;;
+        *)
+            echo "Error: unsupported shell '$_target_shell' (expected bash, zsh, or fish)." >&2
+            exit 1
+            ;;
+    esac
+    exit 0
+fi
 
 if [ ! -f "$SERVERS_FILE" ]; then
     echo "Error: $SERVERS_FILE not found" >&2
@@ -25,6 +120,7 @@ if [[ "$1" == "--help" || "$1" == "-h" ]]; then
     echo "  $0 --all"
     echo "  $0 --list"
     echo "  $0 --search <query>"
+    echo "  $0 --completions [--shell bash|zsh|fish]"
     echo "  $0 --help"
     echo
     echo -e "\033[1mEXAMPLES:\033[0m"
@@ -33,11 +129,14 @@ if [[ "$1" == "--help" || "$1" == "-h" ]]; then
     echo "  claude --mcp-config \"\$($0 --all)\""
     echo "  $0 --list"
     echo "  $0 --search browser"
+    echo "  eval \"\$($0 --completions --shell zsh)\"   # load tab completions"
     echo
     echo -e "\033[1mOPTIONS:\033[0m"
     echo "  --all            Generate configuration with all available MCP servers"
     echo "  --list, -l       List all available MCP servers"
     echo "  --search <query> Search servers by name, keyword, or description"
+    echo "  --completions    Emit the shell completion script for eval"
+    echo "  --shell <name>   Force a shell for --completions (bash, zsh, fish)"
     echo "  --help, -h       Show this help message"
     echo
     echo -e "\033[1mFILES:\033[0m"
